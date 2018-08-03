@@ -1,0 +1,441 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+    <title>测试提交插入数据</title>
+</head>
+<body>
+<script type="text/javascript" th:inline="javascript">
+/*<![CDATA[*/
+	var CTX = [[@{/}]];
+/*]]>*/	
+</script>
+<script type="text/javascript" th:src="@{/static/plugins/jQuery/jquery-2.2.3.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/bootstrap/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/dist/js/app.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/common.js}"></script>
+<script type="text/javascript" th:src="@{/static/plugins/bootstrap-toggle/bootstrap-toggle.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/plugins/bootstrap-validator/js/bootstrapValidator.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/plugins/attention/zDialog/zDrag.js}"></script>
+<script type="text/javascript" th:src="@{/static/plugins/attention/zDialog/zDialog.js}"></script>
+	<label>姓名：</label>
+	<input id="s_name"/>
+	<br />
+	<label>身份证：</label>
+	<input id="s_ID"/>
+	<br />
+	<label id="s_state">提交状态：未进行</label>
+	<button onclick="testSubmit()">提交</button>
+	<button onclick="testSubmitHuman()">白名单提交测试</button>
+	
+	<button onclick="testSubmit2()">提交2</button>
+	<button onclick="projectSubmit()">项目提交测试按钮</button>
+	
+	<form id="inputForm" class="form-horizontal">
+					<input type="hidden" id="id" name="id" value=""/>
+		          	<!-- <input type="hidden" name="projectInfo.id" th:value="${projectInfo}!=null?${projectInfo.id}:''"/> -->
+		            <div class="row">
+					 <div class="col-md-6">
+					 	<div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;项目ID编号:</label>
+		                  	<div class="col-sm-8">
+	                    	 	<input type="text" class="form-control" name="projectInfo.id" value="" />
+		                  	</div>
+		                </div>
+            			<div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;考勤机编号:</label>
+		                  	<div class="col-sm-8">
+	                    	 	<input type="text" class="form-control" name="attenNo" value="" />
+		                  	</div>
+		                </div>
+		                <div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;IP地址:</label>
+		                  	<div class="col-sm-8">
+	                    	 	<input type="text" class="form-control myipaddress" data-inputmask="" data-mask="" name="ipAddr"/>
+		                  	</div>
+		                </div>
+		                <div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;安装地址:</label>
+		                  	<div class="col-sm-8">
+		                 		<input type="text" class="form-control" name="installAddr" value=""/>
+		                  	</div>
+		                </div>
+		                <div class="form-group">
+		                  	<label class="col-sm-4 control-label">出入场类型:</label>
+		                  	<div class="col-sm-8">
+		               		  <select class="form-control" name="swipeStatus">
+		               		  		<option value="">请选择</option>
+	                    			<option value="1" >进入工地</option>
+	                    			<option value="2" >离开工地</option>
+	                    		</select>
+		                  	</div>
+		                </div>
+            		</div>
+            		<div class="col-md-6">
+            			<div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;考勤机名称:</label>
+		                  	<div class="col-sm-8">
+	                    	<input type="text" class="form-control" name="attenName" value=""/> 
+		                  	</div>
+		                </div>
+		                <div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;安装时间:</label>
+		                  	<div class="col-sm-8">
+	                    	<input type="text" class="form-control update datetimepicker"  name="installTime" id="installTime" value=""/>
+		                  	</div>
+		                </div>
+		                <div class="form-group">
+		                  	<label class="col-sm-4 control-label"><i style="color:red;">*</i>&nbsp;是否采集设备:</label>
+		                  	<div class="col-sm-8">
+			                    <select name="isDefault" class="form-control">
+				                  <option value="false" >否</option>
+				                  <option value="true" >是</option>
+				                 </select>
+		                  	</div>
+		                </div>
+            		</div>
+				</div>
+				</form>
+				<button onclick="doSave()">提交考勤机</button>
+				
+				
+		<form id="myform" role="form" class="form-horizontal" enctype="multipart/form-data">
+	  			<input type="hidden" id="id" name="id" value=""/>
+      			<input type="hidden" id="projectInfoId" name="projectInfo.id" th:value="${projectInfoId}"/>
+    			<input type="hidden" name="annexIds" value=""/>  
+    			<input type="hidden" name="userType" value="02"/>
+    			<input type="hidden" name="photoStr" value=""/>
+		        <div class="box box-default box-solid" style="margin-bottom:5px;">
+		            <div class="box-header with-border">
+		              	<h3 class="box-title">单位基本信息</h3>
+		              	<div class="box-tools pull-right">
+		                	<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+		                	</button>
+		             	</div>
+		            </div>
+		            <div class="box-body" style="display: block;">
+		            	<div class="row">
+		            		<div class="col-md-6">
+		            			<div class="form-group">
+				                  	<label class="col-sm-3 control-label">单位名称:</label>
+				                  	<div class="col-sm-9">
+							            <div class="control-label div-label" id="companyName_div"></div>
+				                  	</div>
+				                </div>
+		            		</div>
+		            		<div class="col-md-6">
+		            			<div class="form-group">
+				                    <label class="control-label col-sm-4">统一社会信用代码:</label>
+			                    	<div class="col-sm-8">
+				                    	<div class="control-label div-label" id="socialCreditCode_div"></div>
+			                    	</div>
+				                </div>
+		            		</div>
+		            		<div class="col-md-6">
+		            			<div class="form-group">
+				                  	<label class="col-sm-3 control-label">单位类型:</label>
+				                  	<div class="col-sm-9">
+				                  		<div class="control-label div-label" id="useunitType_div"></div>
+				                  	</div>
+				                </div>
+		            		</div>
+		            	</div>
+		            </div>
+		        </div> 
+		        	       
+		       	<!-- 人员信息添加开始 	     -->   	
+		        <div class="box box-default box-solid" style="margin-bottom:5px;">
+		            <div class="box-header with-border">
+		              	<h1 class="box-title">人员基本信息</h1>
+		            </div>
+		            <!-- /.box-header -->
+		       		<div class="box-body" style="display: block;">
+		       		<div class="row">
+		       			<div class="col-md-6">
+		       				<div class="form-group">
+			                  	<label class="col-sm-3 control-label">姓&nbsp;&nbsp;&nbsp;名:</label>
+			                  	<input type="text" class="form-control" id="name_div" value="" />
+			                </div>
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">身份证号:</label>
+			                  	<input type="text" class="form-control" id="idNumber_div" value="" />
+			                </div>
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">性&nbsp;&nbsp;&nbsp;别:</label>
+			                  	<input type="text" class="form-control" id="sex_div" value="" />
+			                </div>
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">居住证号:</label>
+			                  	<input type="text" class="form-control" id="liveNumber_div" value="" />
+		                	</div>
+		                	<div class="form-group">
+			                  	<label class="col-sm-3 control-label">民&nbsp;&nbsp;&nbsp;族:</label>
+			                  	<input type="text" class="form-control" id="ethnic_div" value="" />
+			                </div>
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">联系电话:</label>
+			                  	<input type="text" class="form-control" id="telphone_div" value="" />
+			                </div>
+		       			</div>
+		       			
+		       		</div>
+		       		<div class="row">
+		       			<div class="col-md-6">
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">婚姻状况:</label>
+			                  	<input type="text" class="form-control" id="marriage_div" value="" />
+			                </div>
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">教育水平:</label>
+			                  	<input type="text" class="form-control" id="eduLevel_div" value="" />
+			                </div>
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">户籍地址:</label>
+			                  	<input type="text" class="form-control" id="resAddress_div" value="" />
+			                </div>	
+			                <div class="form-group">
+			                  	<label class="col-sm-3 control-label">家庭地址:</label>
+			                  	<input type="text" class="form-control" id="familyAddress_div" value="" />
+			                </div>
+		       			</div>
+		       			<div class="col-md-6">
+		       				<div class="form-group">
+			                  	<label class="col-sm-3 control-label">工&nbsp;&nbsp;&nbsp;号:</label>
+			                  	<input type="text" class="form-control" id="workNo_div" value="" />
+			                </div>
+			                <div class="form-group">
+				                <label class="col-sm-3 control-label">IC卡号:</label>
+				                <input type="text" class="form-control" id="icNumber_div" value="" />
+		                  	</div>
+		                  	<div class="form-group">
+				                <label class="col-sm-3 control-label">标签1:</label>
+				                <input type="text" class="form-control" id="outRfid_div" value="" />
+		                  	</div>
+		                  	<div class="form-group">
+				                <label class="col-sm-3 control-label">标签2:</label>
+				                <input type="text" class="form-control" id="inRfid_div" value="" />
+		                  	</div>
+		       			</div>
+		       		</div>
+		            </div>
+		            <!-- /.box-body -->
+		        </div>
+				    
+		     	<div class="box box-default box-solid" style="margin-bottom:5px;">
+		            <div class="box-header with-border">
+		              	<h3 class="box-title">从业人员信息</h3>
+		              	<!-- /.box-tools -->
+		            </div>
+		            <!-- /.box-header -->
+		            <div class="box-body" style="display: block;">
+		            	<div class="row">
+		            		<div class="col-md-6">
+		            			<div class="form-group">
+				                  	<label class="col-sm-3 control-label">所属班组:</label>
+				                  	<input type="text" class="form-control" id="projectteam_id_div" value="" />
+				                </div>
+				                <div class="form-group">
+				                  	<label class="col-sm-3 control-label">是否组长:</label>
+				                  	<input type="text" class="form-control" id="is_leader_div" value="" />
+				                </div>
+		            		</div>
+		            		<div class="col-md-6">
+		            			<div class="form-group">
+				                  	<label class="col-sm-3 control-label">岗前培训:</label>
+				                  	<input type="text" class="form-control" id="is_train_div" value="" />
+				                </div>
+				                <div class="form-group">
+				                  	<label class="col-sm-3 control-label">是否替工:</label>
+				                  	<input type="text" class="form-control" id="is_replace_div" value="" />
+				                </div>
+		            		</div>
+		            		<div class="col-md-12">
+		            			<div class="form-group">
+				                  	<label class="control-label" style="width: 111px;float: left;padding-right: 15px;">备&nbsp;&nbsp;&nbsp;注:</label>
+				                  	<input type="text" class="form-control" id="remark_div" value="" />
+				                </div>
+		            		</div>
+		            	</div>
+		            </div>
+		        </div>
+                   
+		        </form>
+		        <div>
+					<button id="close_submit_btn" type="button" class="btn btn-primary" onclick="doSave2()">保存</button>
+				</div>
+			<!-- 人员信息添加结束 	     -->   	
+</body>
+
+<script th:inline="javascript" type="text/javascript">
+	function testSubmit(){
+		var projectLicence = $('#s_name').val();
+		$('#s_state').html("提交状态：上传中！");
+		$.ajax({
+			/* url: CTX+'haha/test', */
+			url: CTX+'custom/search-project-info',
+			type: 'POST',
+			dataType: 'json',
+			data: {"projectLicence": projectLicence}, 
+			timeout: 10000,
+			success: function(json){
+				$('#s_state').html("提交状态：成功！" + "s_name:" + json.s_name + ",s_ID:" + json.s_ID);
+			}
+		});
+	}
+	//白名单提交测试
+	function testSubmitHuman(){
+		var data = [{
+	        "name": "鹿目圆香",
+	        "id_number": "000001",
+	        "main_work_type": "马猴烧酒",
+			"tripodTurnstile":"true",
+			"magneticLock":"false"
+			},{
+	        "name": "晓美焰",
+	        "id_number": "000002",
+	        "main_work_type": "马猴烧酒",
+			"tripodTurnstile":"true",
+			"magneticLock":"false"
+			},{
+	        "name": "巴麻美",
+	        "id_number": "000003",
+	        "main_work_type": "马猴烧酒",
+			"tripodTurnstile":"true",
+			"magneticLock":"false"
+			},{
+	        "name": "美树沙耶加",
+	        "id_number": "000004",
+	        "main_work_type": "马猴烧酒",
+			"tripodTurnstile":"true",
+			"magneticLock":"false"
+			},{
+	        "name": "佐仓杏子",
+	        "id_number": "000005",
+	        "main_work_type": "马猴烧酒",
+			"tripodTurnstile":"true",
+			"magneticLock":"false"
+			}];
+		var projectLicence = '23345657844347886';
+		$('#s_state').html("提交状态：上传中！");
+		$.ajax({
+			url: CTX+'essi/receive-list-info',
+			type: 'POST',
+			dataType: 'json',
+			data: {"project_licence": projectLicence, "jsonArray":JSON.stringify(data)}, 
+			timeout: 10000,
+			success: function(json){
+				$('#s_state').html("提交状态：成功！");
+			}
+		});
+	}
+	  function testSubmit2(){
+		  	var test2 = {"name":"gwm","pwd":"12334"};
+		  	var testjson = [{'name':'jim' , 'age':20} , {'name':'king' , 'age':26},{'name':'jge' , 'age':30}];
+	        console.log(JSON.stringify(test2));
+	        $.ajax({
+	            type: "POST",
+	            url: CTX+'custom/gzx',
+	            contentType:"application/json;charset=utf-8",
+	            processData : false,
+	            data : JSON.stringify(test2),
+	            success : function(msg) {
+	                alert("返回的数据"+msg);
+	            }
+	        });
+	    }
+	//项目提交测试函数
+	  function projectSubmit(){
+			var testjson = [{
+				"build_area":"",
+				"plan_end_date":null,
+				"project_name":"机场西站~翔安机场站",
+				"status":"建设阶段",
+				"location":"",
+				"project_licence":"787_03050305",
+				"project_nature":"区间",
+				"project_address":"",
+				"useunit_name":"厦门轨道交通集团有限公司",
+				"contract_company":"",
+				"con_amount":"",
+				"start_date":null,
+				"project_survey":""
+			},{
+				"build_area":"",
+				"plan_end_date":null,
+				"project_name":"机场西站~翔安机场站",
+				"status":"建设阶段",
+				"location":"",
+				"project_licence":"787_03050306",
+				"project_nature":"区间",
+				"project_address":"",
+				"useunit_name":"厦门轨道交通集团有限公司",
+				"contract_company":"",
+				"con_amount":"",
+				"start_date":null,
+				"project_survey":""
+			}];
+			$('#s_state').html("提交状态：上传中！");
+			$.ajax({
+				url: CTX+'custom/update-project-info',
+				type: 'POST',
+				dataType: 'json',
+				data: {"jsonArray":JSON.stringify(testjson)}, 
+				timeout: 10000,
+				success: function(json){
+					$('#s_state').html("提交状态：成功！");
+				}
+			});
+		}
+	//数据持久化
+	function doSave(){
+		if(true){
+			console.log($("#inputForm").serialize());
+			loading('正在保存,请稍后...');
+		$.ajax({  
+			url: CTX+'attendance-device/save-attendance-device',
+            type: 'POST',  
+            data:$('#inputForm').serialize(),// 序列化表单值  
+            dataType: 'json',//服务端接收的数据类型
+            success:function(json) {  
+				if(json.success){
+					alert(json.msg);
+				}else{
+					alert(json.msg);
+				}
+            },  
+            error:function(json) {  
+            	alert(json);
+            	alert('请求超时或系统出错!');
+            }  
+        });  
+	  }
+	}
+	
+	
+	function doSave2(){
+    	//异步验证的需要此处提交表单
+    	$.ajax({
+			/* url: CTX+'personnel/save-personnel', */
+			url: CTX+'haha/test',
+			type: 'POST',  
+            data:$('#inputForm').serialize(),// 序列化表单值  
+            dataType: 'json',//服务端接收的数据类型
+			timeout: 15000,
+			success: function(json){
+				alert(json.msg);
+				if(json.success){
+					queryInfo();
+					if(cur_save_type=='next'){
+						fnResetaddForm();
+					}else{
+						$("#addModal").modal('toggle');
+					}
+				}
+			},
+			error: function(){
+				alert('请求超时或系统出错!');
+			}
+		});
+    }
+</script>
+</html>
